@@ -1,5 +1,4 @@
 import React from "react";
-import "./Chat.css";
 import {
   Avatar,
   Divider,
@@ -83,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Chat = () => {
+const Chat = ({ messages }) => {
   const classes = useStyles();
   return (
     <Grid className={classes.chat}>
@@ -106,16 +105,24 @@ const Chat = () => {
         </Grid>
       </Grid>
       <Divider />
-      <Grid className={classes.chat__body}>
-        <p
-          className={[classes.chat__message, classes.chat__reciever].join(" ")}
-        >
-          <span className={classes.chat__name}>jayraj</span>
-          THis is a message
-          <span className={classes.chat__timestamp}>
-            {new Date().toUTCString()}
-          </span>
-        </p>
+      <Grid className={classes.chat__body} id="chat__body">
+        {messages.map((message) => {
+          return (
+            <p
+              key={message._id}
+              className={[
+                classes.chat__message,
+                message.received ? classes.chat__reciever : "",
+              ].join(" ")}
+            >
+              <span className={classes.chat__name}>{message.name}</span>
+              {message.message}
+              <span className={classes.chat__timestamp}>
+                {new Date().toUTCString()}
+              </span>
+            </p>
+          );
+        })}
       </Grid>
       <form action="">
         <Grid className={classes.chat__footer}>
