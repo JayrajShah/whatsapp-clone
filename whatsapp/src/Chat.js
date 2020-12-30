@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Avatar,
   Divider,
@@ -15,6 +15,7 @@ import {
   InsertEmoticonOutlined,
   Send,
 } from "@material-ui/icons";
+import axios from "./axios";
 
 const useStyles = makeStyles((theme) => ({
   chat: {
@@ -84,6 +85,19 @@ const useStyles = makeStyles((theme) => ({
 
 const Chat = ({ messages }) => {
   const classes = useStyles();
+  const [input, setInput] = useState("");
+
+  const sendMessage = async (e) => {
+    e.preventDefault();
+    await axios.post("/api/v1/messages/new", {
+      message: input,
+      name: "Jayraj",
+      timestamp: "just nOw",
+      received: false,
+    });
+    setInput("");
+  };
+
   return (
     <Grid className={classes.chat}>
       <Grid className={classes.chat__header}>
@@ -132,6 +146,8 @@ const Chat = ({ messages }) => {
                 <InsertEmoticonOutlined />
               </IconButton>
               <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
                 style={{ outlineWidth: "0", border: "none", width: "100%" }}
                 type="text"
                 placeholder="Search or start a new chat"
@@ -139,7 +155,8 @@ const Chat = ({ messages }) => {
             </Grid>
           </Paper>
           <Fab
-            aria-label="add"
+            type="submit"
+            onClick={sendMessage}
             style={{
               marginLeft: 10,
               marginRight: 10,
