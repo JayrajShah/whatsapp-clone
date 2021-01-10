@@ -4,7 +4,7 @@ const messageSchema = mongoose.Schema({
   message: String,
   name: String,
   timestamp: String,
-  received: Boolean,
+  email: String,
 });
 
 export default mongoose.model("messageschemas", messageSchema);

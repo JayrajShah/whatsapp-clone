@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Grid,
   Avatar,
@@ -28,11 +28,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SidebarChat = () => {
+  const [seed, setSeed] = useState("");
+  useEffect(() => {
+    setSeed(Math.floor(Math.random() * 5000));
+  }, []);
   const classes = useStyles();
   return (
     <>
       <ButtonBase style={{ width: "100%" }} className={classes.sidebarChat}>
-        <Avatar />
+        <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`} />
         <Grid className={classes.sidebarChat__info}>
           <h2 variant="h4">Room name</h2>
           <p variant="body1">This is the last message</p>

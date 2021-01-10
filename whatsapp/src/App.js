@@ -6,9 +6,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import Pusher from "pusher-js";
 import axios from "./axios";
 import { animateScroll as scroll } from "react-scroll";
+import Login from "./Login";
+import { useStateValue } from "./StateProvider";
+import { actionTypes } from "./reducer";
 
 function App() {
   const [messages, setMessages] = useState([]);
+  // const [user, setUser] = useState(null);
+  const [{ user }, dispatch] = useStateValue();
 
   const scrollT0Bottom = () => {
     const poops = setInterval(() => {
@@ -32,12 +37,23 @@ function App() {
   }, []);
 
   useEffect(() => {
+    if (localStorage.getItem("user")) {
+      console.log("HEYY");
+      dispatch({
+        type: actionTypes.SET_USER,
+        user: JSON.parse(localStorage.getItem("user")),
+      });
+    }
+  }, []);
+
+  useEffect(() => {
     const pusher = new Pusher("8842032136cb0213f716", {
       cluster: "ap2",
     });
 
     const channel = pusher.subscribe("messages");
     channel.bind("inserted", (newMessage) => {
+      console.log("new Message", newMessage);
       setMessages([...messages, newMessage]);
     });
     setTimeout(() => {
@@ -66,15 +82,22 @@ function App() {
     },
   }));
   const classes = useStyles();
-  console.log(messages);
+  // console.log(messages);
 
+  console.log("usereee", user);
   return (
-    <Grid className={classes.app}>
-      <Paper className={classes.app__body} elevation={5}>
-        <Sidebar />
-        <Chat messages={messages} />
-      </Paper>
-    </Grid>
+    <>
+      {!user ? (
+        <Login />
+      ) : (
+        <Grid className={classes.app}>
+          <Paper className={classes.app__body} elevation={5}>
+            <Sidebar />
+            <Chat messages={messages} />
+          </Paper>
+        </Grid>
+      )}
+    </>
   );
 }
 

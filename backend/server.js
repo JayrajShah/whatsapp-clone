@@ -49,7 +49,7 @@ db.once("open", () => {
         name: messageDetails.name,
         message: messageDetails.message,
         timestamp: messageDetails.timestamp,
-        received: messageDetails.received,
+        email: messageDetails.email,
         _id: messageDetails._id,
       });
     } else {

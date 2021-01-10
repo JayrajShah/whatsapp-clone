@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Chat, DonutLarge, MoreVert, Search } from "@material-ui/icons";
+import { useStateValue } from "./StateProvider";
 
 const useStyles = makeStyles((theme) => ({
   sidebar: {
@@ -51,10 +52,11 @@ const useStyles = makeStyles((theme) => ({
 
 const Sidebar = () => {
   const classes = useStyles();
+  const [{ user }, dispatch] = useStateValue();
   return (
     <Grid className={classes.sidebar}>
       <Grid className={classes.sidebar__header}>
-        <Avatar src="https://avatars3.githubusercontent.com/u/33173075?s=460&u=86e85ed36c348977a899cb36cb8a9dfe226dda37&v=4" />
+        <Avatar src={user.photoURL} />
         <Grid className={classes.sidebar__headerRight}>
           <IconButton>
             <Chat />

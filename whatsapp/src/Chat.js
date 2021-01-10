@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Avatar,
   Divider,
@@ -16,6 +16,7 @@ import {
   Send,
 } from "@material-ui/icons";
 import axios from "./axios";
+import { useStateValue } from "./StateProvider";
 
 const useStyles = makeStyles((theme) => ({
   chat: {
@@ -86,15 +87,18 @@ const useStyles = makeStyles((theme) => ({
 const Chat = ({ messages }) => {
   const classes = useStyles();
   const [input, setInput] = useState("");
+  const [{ user }, dispatch] = useStateValue();
 
-  const sendMessage = async (e) => {
+  const sendMessage = async (e, user) => {
     e.preventDefault();
-    await axios.post("/api/v1/messages/new", {
-      message: input,
-      name: "Jayraj",
-      timestamp: "just nOw",
-      received: false,
-    });
+    !!input
+      ? await axios.post("/api/v1/messages/new", {
+          message: input,
+          name: user.displayName,
+          timestamp: new Date().toISOString(),
+          email: user.email,
+        })
+      : setInput("");
     setInput("");
   };
 
@@ -126,13 +130,13 @@ const Chat = ({ messages }) => {
               key={message._id}
               className={[
                 classes.chat__message,
-                message.received ? classes.chat__reciever : "",
+                message.email === user.email ? classes.chat__reciever : "",
               ].join(" ")}
             >
               <span className={classes.chat__name}>{message.name}</span>
               {message.message}
               <span className={classes.chat__timestamp}>
-                {new Date().toUTCString()}
+                {new Date(message.timestamp).toUTCString()}
               </span>
             </p>
           );
@@ -150,13 +154,13 @@ const Chat = ({ messages }) => {
                 onChange={(e) => setInput(e.target.value)}
                 style={{ outlineWidth: "0", border: "none", width: "100%" }}
                 type="text"
-                placeholder="Search or start a new chat"
+                placeholder="Type a message"
               />
             </Grid>
           </Paper>
           <Fab
             type="submit"
-            onClick={sendMessage}
+            onClick={(e) => sendMessage(e, user)}
             style={{
               marginLeft: 10,
               marginRight: 10,
